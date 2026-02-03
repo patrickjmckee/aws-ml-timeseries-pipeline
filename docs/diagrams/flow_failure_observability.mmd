@@ -1,0 +1,18 @@
+---
+config:
+  layout: elk
+---
+flowchart TB
+
+EVENT[Pipeline Event] --> LOGS[CloudWatch Logs]
+EVENT --> METRICS[CloudWatch Metrics]
+
+LOGS --> ALERTS[Alerts / Notifications]
+
+API[Service API Calls] --> TRAIL[CloudTrail Audit Log]
+
+ALERTS --> REVIEW[Engineering Review]
+TRAIL --> REVIEW
+
+style ALERTS fill:#ffe6e6,stroke:#aa0000
+style REVIEW fill:#e6f2ff,stroke:#004488

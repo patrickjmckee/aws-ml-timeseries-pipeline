@@ -1,0 +1,15 @@
+---
+config:
+  layout: elk
+---
+flowchart TB
+
+START[Manual or Scheduled Trigger]
+START --> LOAD[Load Local CSV Files]
+
+LOAD --> META[Attach Metadata<br/>dataset_id, timestamp]
+META --> WRITE[Write to S3 Raw Zone]
+
+WRITE --> LOG[Emit Logs & Metrics]
+
+style WRITE fill:#e6f2ff,stroke:#004488

@@ -1,0 +1,89 @@
+---
+config:
+    layout: elk
+---
+flowchart TB
+
+%% ======================
+%% PROCESS + EDGE LAYER
+%% ======================
+subgraph PROCESS["Process / Edge Layer"]
+
+    %% ======================
+    %% SYSTEM TO OPTIMIZE
+    %% ======================
+    T[Target System] 
+    FS[\Fail-Safe/]
+    
+    FS --- T 
+
+end
+    
+%% ======================
+%% DATA STORE
+%% ======================
+DB[(Local DB)]
+
+%% ======================
+%% SYSTEM CONTROL
+%% ======================
+AUTO[Control Layer<br>- Actuator Control<br>- Guardrails<br>- Ideal State]
+
+T --> AUTO
+
+%% ======================
+%% ML PIPELINE
+%% ======================
+
+subgraph ML["MLOps"]
+
+    TELEM[Telemetry Ingestion]
+    FE[Feature Engineering]
+    OPT[Model Inference<br>- State<br>- Drift Detection]
+    VAL[Data Validation]
+
+end
+
+AUTO -->|TCP| TELEM --> FE --> OPT --> VAL
+
+%% ======================
+%% ENTERPRISE PIPELINE
+%% ======================
+subgraph ENTERPRISE["Data Engineering"]
+
+    ETL[ETL]
+    CLOUD[Cloud]
+    BS[Business Enterprise]
+
+end
+
+VAL --> DB
+DB --> |last validated <br>model output| AUTO
+
+%% ======================
+%% ENTERPRISE MIRRORING
+%% ======================
+VAL --> | API | ETL
+ETL --> CLOUD
+CLOUD --> BS
+CLOUD --> AUTO
+AUTO --> T
+
+%% ======================
+%% STYLING
+%% ======================
+%% First arrow (T→FS)
+linkStyle 0 stroke:red,stroke-dasharray:5 5,stroke-width:2px
+linkStyle 7 stroke:red,stroke-dasharray:5 5,stroke-width:2px
+linkStyle 11 stroke:green,stroke-dasharray:5 5,stroke-width:5px
+linkStyle 12 stroke:green,stroke-dasharray:5 5,stroke-width:5px
+
+%% Text styling
+style AUTO text-align:left
+style OPT text-align:left
+
+%% Node styling
+style FS fill:red,stroke:red,stroke-width:2px
+
+%% Default styling
+linkStyle default stroke:#0000ff,stroke-width:1px

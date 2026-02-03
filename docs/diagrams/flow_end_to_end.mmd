@@ -1,0 +1,22 @@
+---
+
+config:
+  layout: elk
+
+---
+
+flowchart TB
+
+SRC[Source Dataset Files] --> INGEST[Raw Ingestion]
+INGEST --> RAWVAL{Raw Validation}
+
+RAWVAL -->|PASS| PROCESS[Processed Data Generation]
+RAWVAL -->|FAIL| STOP[Pipeline Halt]
+
+PROCESS --> PROCVAL{Processed Validation}
+
+PROCVAL -->|VALID| CONSUME[Analytics / ML Consumers]
+PROCVAL -->|INVALID| SAFE[Inference Suppressed<br/>Fallback Mode]
+
+style STOP fill:#ffdddd,stroke:#aa0000
+style SAFE fill:#fff2cc,stroke:#aa8800

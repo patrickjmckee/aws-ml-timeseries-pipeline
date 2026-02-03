@@ -1,0 +1,19 @@
+---
+config:
+  layout: elk
+---
+flowchart TB
+
+RAWOK[Validated Raw Data] --> TRANSFORM[Apply Modifications<br/>dropout, drift, features]
+
+TRANSFORM --> STORE[Write Processed Data to S3]
+
+STORE --> VAL[ECS Processed Validation Job]
+VAL --> CHECKS[Missingness, Drift, Confidence Checks]
+
+CHECKS --> DECIDE{Inference Valid?}
+
+DECIDE -->|YES| READY[Available for ML / Analytics]
+DECIDE -->|NO| GATE[Inference Disabled<br/>Fallback Active]
+
+style GATE fill:#fff2cc,stroke:#aa8800

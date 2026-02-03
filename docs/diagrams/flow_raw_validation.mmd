@@ -1,0 +1,20 @@
+---
+config:
+  layout: elk
+---
+flowchart TB
+
+TRIGGER[Post-Ingestion Trigger] --> ECS[ECS Validation Job]
+
+ECS --> READ[Read Raw Data from S3]
+READ --> CHECKS[Schema & Integrity Checks]
+
+CHECKS --> DECIDE{Validation Result}
+
+DECIDE -->|PASS| REPORT[Write Validation Report]
+DECIDE -->|FAIL| ALERT[Log Error & Halt Pipeline]
+
+REPORT --> NEXT[Enable Processing Stage]
+
+style ALERT fill:#ffdddd,stroke:#aa0000
+style ECS fill:#e8f5e9,stroke:#2e7d32
